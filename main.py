@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from starlette.requests import Request
-import json
+import requests
 import ast
 
 app = FastAPI()
@@ -10,7 +10,8 @@ app = FastAPI()
 async def index():
     return {
         "Cashback Processing Software V:": 1.1,
-        "Dev":"Ives Costa"
+        "Dev":"Ives Costa",
+        "Date":""
     }
 
 @app.post("/api/cashback")
@@ -21,6 +22,8 @@ async def cashback_processor(request: Request):
     order_data = ast.literal_eval(dict_data)
     
     print(order_data)
+    
+    
     
     return {
         "status":201
