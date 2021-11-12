@@ -1,0 +1,8 @@
+services:
+  cashback_service:
+      container_name: cashback_application
+      build:
+        dockerfile: Dockerfile
+        context: .
+      ports:
+        - 8000:8000

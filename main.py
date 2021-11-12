@@ -1,6 +1,5 @@
 import requests
 import ast
-import uvicorn
 from datetime import datetime
 from fastapi import FastAPI, status
 from starlette.requests import Request
@@ -12,10 +11,21 @@ class Product:
         self.type = type
         self.value = value
         self.qty = qty
+        self.discount = 0.00
         
+
     def __str__(self) -> str:
         return f"""Type:{self.type}
             | Value: {self.value} | Quantity:{self.qty}"""
+        
+        
+    def validate_type(self):   
+        allowed_types = {"a":5, "b":15, "c":25}
+        if str(self.type).lower() in allowed_types: 
+            self.discount = (allowed_types[str(self.type).lower()] / 100) 
+            return self.discount
+        else:
+            return None
         
 class Customer:
     def __init__(self, document, name) -> None:
@@ -41,15 +51,21 @@ class Customer:
 
 class Order:
     def __init__(self, sold_at, customer:Customer, total):
-        datetime_obj = datetime.strptime(sold_at,'%y/%m/%d %H:%M:%S')
+        datetime_obj = sold_at
         self.customer = customer
         self.sold_at = datetime_obj
         self.total = total
         self.products = []
+        self.total_cashback = 0.00
+        self.types = []
         
     def append_product(self,type, value, qty):
         product = Product(type, value, qty)
         self.products.append(product)
+        
+    def calculation_cashback_products(self):
+        for product in self.products:
+            print(product.validate_type())
         
         
     
@@ -86,20 +102,24 @@ async def cashback_processor(request: Request, response :Response):
     order = Order(customer=customer, sold_at=order_data["sold_at"], total=order_data["total"])
     
     total_order = 0
-        
     for product in order_data["products"]:
-        order.append_product(Product(product["type"], product["value"], product["qty"]))
-        total_order =+ product["value"]
+        
+        order.append_product(type=product["type"], value=product["value"], qty=product["qty"])
+        total_order += (float(product["value"]) * product["qty"])
     
     
-    if(total_order != order.total):
+    if(float(total_order) != float(order.total)):
         response.status_code = status.HTTP_400_BAD_REQUEST
         return {
-            "status":"Value order is not equal to total products value"
+            "status":"Value order error"
         }
+        
+    order.calculation_cashback_products()
+        
+
     
     return {
-        "status":"Error"
+        "status":"Cashback complete"
     }
 
 
