@@ -2,8 +2,8 @@ from fastapi import FastAPI, status
 from starlette.requests import Request
 from starlette.responses import Response
 from models import Customer, Order
-from time import time
-from tasks import task
+from consts import *
+import httpx
 import ast
 import uvicorn
 import json
@@ -54,17 +54,20 @@ async def cashback_processor(request: Request, response :Response):
         }
         
     #Send cashback for API
-    data=json.dumps({
+    
+    response_api = httpx.post(url=API_URL_REQUEST,
+                   data=json.dumps({
         "document":order.customer.document,
         "cashback":order.calculation_cashback_products()
-    })
+    }))
     
-    start = time()
-    await task(order.customer.document, order.calculation_cashback_products())
-    print("time: ", time() - start)
+    # start = time()
+    # await task(order.customer.document, order.calculation_cashback_products())
+    # print("time: ", time() - start)
     
     return {
         "status":"Cashback complete",
+        "response":response_api.json()
     }
 
 
