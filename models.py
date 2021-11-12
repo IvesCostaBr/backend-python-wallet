@@ -1,3 +1,5 @@
+from datetime import datetime
+
 class Product:
     def __init__(self, type, value, qty):
         self.type = type
@@ -15,7 +17,6 @@ class Product:
         allowed_types = {"a":5, "b":15, "c":25}
         if str(self.type).lower() in allowed_types: 
             self.discount = (allowed_types[str(self.type).lower()] / 100) * (self.qty * float(self.value))
-            print(self.discount)
             return self.discount
         else:
             return None
@@ -62,6 +63,7 @@ class Order:
             if (value):
                 self.total_cashback += value
             else:
-                break
                 self.total_cashback = None
+                break
+    
         return self.total_cashback

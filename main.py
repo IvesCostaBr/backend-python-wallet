@@ -1,14 +1,14 @@
-import requests
-import ast
-from datetime import datetime
 from fastapi import FastAPI, status
 from starlette.requests import Request
 from starlette.responses import Response
-from .models.models import *
+from models import Customer, Order
+from time import time
+from tasks import task
+import ast
+import uvicorn
+import json
 
 
-
-API_URL_EXTERNAL="https://5efb30ac80d8170016f7613d.mockapi.io/api/mock/Cashback"
 
 app = FastAPI()
 
@@ -54,14 +54,19 @@ async def cashback_processor(request: Request, response :Response):
         }
         
     #Send cashback for API
-    requests.post(url=API_URL_EXTERNAL, headers="Content-Type: application/json", data={
+    data=json.dumps({
         "document":order.customer.document,
         "cashback":order.calculation_cashback_products()
     })
-        
+    
+    start = time()
+    await task(order.customer.document, order.calculation_cashback_products())
+    print("time: ", time() - start)
+    
     return {
-        "status":"Cashback complete"
+        "status":"Cashback complete",
     }
 
 
-
+if __name__ == '__main__':
+    uvicorn.run(app="main:app",host="127.0.0.1",port=8000,debug=True)
