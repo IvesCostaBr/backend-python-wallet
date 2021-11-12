@@ -1,9 +1,9 @@
-from fastapi import FastAPI, status
-from starlette.requests import Request
 import requests
 import ast
 import uvicorn
-
+from datetime import datetime
+from fastapi import FastAPI, status
+from starlette.requests import Request
 from starlette.responses import Response
 
 
@@ -41,8 +41,9 @@ class Customer:
 
 class Order:
     def __init__(self, sold_at, customer:Customer, total):
+        datetime_obj = datetime.strptime(sold_at,'%y/%m/%d %H:%M:%S')
         self.customer = customer
-        self.sold_at = sold_at
+        self.sold_at = datetime_obj
         self.total = total
         self.products = []
         
@@ -67,7 +68,7 @@ async def index():
 
 
 
-@app.post("/api/cashback", status_code=201)
+@app.post("/api/cashback")
 async def cashback_processor(request: Request, response :Response):
     #Converting Bytes in to Dict
     data_receiver = await request.body()
@@ -75,12 +76,27 @@ async def cashback_processor(request: Request, response :Response):
     order_data = ast.literal_eval(dict_data)
     
     customer = Customer(order_data["customer"]["document"], order_data["customer"]["name"])
-    print(customer.validate_cpf())
     
+    if(customer.validate_cpf() is False):
+        response.status_code = status.HTTP_400_BAD_REQUEST
+        return {
+            "status":"document invalid"
+        }
     
+    order = Order(customer=customer, sold_at=order_data["sold_at"], total=order_data["total"])
+    
+    total_order = 0
+        
     for product in order_data["products"]:
-        print(product)
+        order.append_product(Product(product["type"], product["value"], product["qty"]))
+        total_order =+ product["value"]
     
+    
+    if(total_order != order.total):
+        response.status_code = status.HTTP_400_BAD_REQUEST
+        return {
+            "status":"Value order is not equal to total products value"
+        }
     
     return {
         "status":"Error"
