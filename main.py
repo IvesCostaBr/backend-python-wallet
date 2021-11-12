@@ -33,7 +33,7 @@ async def cashback_processor(request: Request, response :Response):
     
     #Validation CPF
     if(customer.validate_cpf() is False):
-        response.status_code = status.HTTP_400_BAD_REQUEST
+        response.status_code = 400
         return {
             "status":"document invalid"
         }
@@ -48,26 +48,31 @@ async def cashback_processor(request: Request, response :Response):
     
     #Validation Total Order
     if(float(total_order) != float(order.total)):
-        response.status_code = status.HTTP_400_BAD_REQUEST
+        response.status_code = 400
         return {
             "status":"Value order error"
         }
         
     #Send cashback for API
     
-    response_api = httpx.post(url=API_URL_REQUEST,
-                   data=json.dumps({
-        "document":order.customer.document,
-        "cashback":order.calculation_cashback_products()
-    }))
+    try:   
+        response_api = httpx.post(url=API_URL_REQUEST,
+                    data=json.dumps({
+            "document":order.customer.document,
+            "cashback":order.calculation_cashback_products()
+        })).json()
+        status = "Cashback complete"
+        response.status_code = 201
+    except:
+        response_api="error in request"
+        status = "Operation Fail"
+        response.status_code = 500
     
-    # start = time()
-    # await task(order.customer.document, order.calculation_cashback_products())
-    # print("time: ", time() - start)
-    
+        
+    #Response to client
     return {
-        "status":"Cashback complete",
-        "response":response_api.json()
+        "status":status,
+        "response":response_api
     }
 
 
