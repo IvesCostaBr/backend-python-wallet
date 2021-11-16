@@ -1,4 +1,5 @@
 from logging import ERROR
+import re
 from fastapi import FastAPI, status
 from starlette.requests import Request
 from starlette.responses import Response
@@ -26,9 +27,15 @@ async def index():
 @app.post("/api/cashback")
 async def cashback_processor(request: Request, response :Response):
     #Converting Bytes in to Dict
-    data_receiver = await request.body()
-    dict_data = data_receiver.decode("UTF-8")
-    order_data = ast.literal_eval(dict_data)
+    try:
+        data_receiver = await request.body()
+        dict_data = data_receiver.decode("UTF-8")
+        order_data = ast.literal_eval(dict_data)
+    except:
+        response.status_code = 400
+        return {
+            "status":"operation not valid"
+        }
     
     customer = Customer(order_data["customer"]["document"], order_data["customer"]["name"])
     
@@ -59,8 +66,7 @@ async def cashback_processor(request: Request, response :Response):
             "status":"Value order error"
         }
         
-    #Send cashback for API
-    
+    #Send cashback for API  
     try:   
         response_api = httpx.post(url=API_URL_REQUEST,
                     data=json.dumps({

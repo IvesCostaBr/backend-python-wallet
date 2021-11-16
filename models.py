@@ -63,7 +63,6 @@ class Order:
         if (str(date_time_obj) <= date_now):
             return date_time_obj
         else:
-            print("not valid")
             return None
         
         
