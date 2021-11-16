@@ -5,4 +5,6 @@ services:
         dockerfile: Dockerfile
         context: .
       ports:
-        - 8000:8000
+        - 8000:80
+      environment:
+        - API_URL_REQUEST="https://5efb30ac80d8170016f7613d.mockapi.io/api/mock/Cashback"
