@@ -1,2 +1,2 @@
 -r requirements-dev.txt
-uvicorn
+gunicorn==20.0.4
