@@ -1,3 +1,4 @@
+from logging import ERROR
 from fastapi import FastAPI, status
 from starlette.requests import Request
 from starlette.responses import Response
@@ -33,12 +34,17 @@ async def cashback_processor(request: Request, response :Response):
     
     #Validation CPF
     if(customer.validate_cpf() is False):
-        response.status_code = 400
+        response.status_code = 422
         return {
             "status":"document invalid"
         }
-    
+
     order = Order(customer=customer, sold_at=order_data["sold_at"], total=order_data["total"])
+    if order.sold_at == None:
+        response.status_code = 422
+        return {
+            "status":"Date invalid"
+        }
     
     total_order = 0
     for product in order_data["products"]:
@@ -48,7 +54,7 @@ async def cashback_processor(request: Request, response :Response):
     
     #Validation Total Order
     if(float(total_order) != float(order.total)):
-        response.status_code = 400
+        response.status_code = 422
         return {
             "status":"Value order error"
         }
