@@ -2,8 +2,9 @@
 
 ## 📝 Sobre o projeto
 
-Esse projeto trata-se de um serviço de tratamento e validações de dados para cadastro de cashback em outro sistema.
-Sobre min:
+- Esse projeto trata-se de um serviço de tratamento e validações de dados para cadastro de cashback em outro sistema.
+
+- Sobre min:
     Gosto muito de desenvolver em python, espero sempre aprender e contribuir com tudo aquilo que estou participando sempre buscando melhorar minha habilidades.
     
 ## 🛠️ Tecnologias Utilizadas
