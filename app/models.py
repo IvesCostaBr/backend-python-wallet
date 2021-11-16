@@ -26,6 +26,7 @@ class Customer:
 class Product:
     def __init__(self, type, value, qty):
         self.type = type
+        self.validate_types()
         self.value = value
         self.qty = qty
         self.discount = 0.00
@@ -34,15 +35,23 @@ class Product:
     def __str__(self) -> str:
         return f"""Type:{self.type}
             | Value: {self.value} | Quantity:{self.qty}"""
+       
+       
+    def validate_types(self):
+        allowed_types = {"a":5, "b":15, "c":25}
+        if str(self.type).lower() in allowed_types:
+            return
+        else:
+            self.type = None
         
-        
-    def validate_type(self):   
+    def calculate_discount(self):   
         allowed_types = {"a":5, "b":15, "c":25}
         if str(self.type).lower() in allowed_types: 
             self.discount = (allowed_types[str(self.type).lower()] / 100) * (self.qty * float(self.value))
             return self.discount
         else:
             return None
+    
         
 
 class Order:
@@ -70,13 +79,16 @@ class Order:
         product = Product(type, value, qty)
         self.products.append(product)
         
-    def calculation_cashback_products(self):
+    def calculate_cashback_products(self):
         for product in self.products:
-            value = product.validate_type()
+            value = product.value
             if (value):
-                self.total_cashback += value
+                self.total_cashback += float(value)
             else:
                 self.total_cashback = None
                 break
     
         return self.total_cashback
+    
+    def __str__(self):
+        return f"Sold at:{self.sold_at} |Products:{self.products}"

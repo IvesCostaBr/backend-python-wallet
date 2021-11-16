@@ -3,7 +3,7 @@ name: Deploy pipeline FastApi Application
 
 on:
   push:
-    branches: [ dev ]
+    branches: [ master ]
 
 jobs:
   deploy_heroku:

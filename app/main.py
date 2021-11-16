@@ -1,16 +1,12 @@
 from logging import ERROR
-import re
-from fastapi import FastAPI, status
+from fastapi import FastAPI
 from starlette.requests import Request
 from starlette.responses import Response
-from models import Customer, Order
-from consts import *
+from .models import Customer, Order
+from .consts import *
 import httpx
 import ast
-import uvicorn
 import json
-
-
 
 app = FastAPI()
 
@@ -20,7 +16,7 @@ async def index():
     return {
         "Cashback Processing Software V:": 1.1,
         "Dev":"Ives Costa",
-        "Date":""
+        "Date":"16/11/2021"
     }
 
 
@@ -46,7 +42,9 @@ async def cashback_processor(request: Request, response :Response):
             "status":"document invalid"
         }
 
-    order = Order(customer=customer, sold_at=order_data["sold_at"], total=order_data["total"])
+    order = Order(customer=customer, 
+                  sold_at=order_data["sold_at"], 
+                    total=order_data["total"])
     if order.sold_at == None:
         response.status_code = 422
         return {
@@ -55,10 +53,18 @@ async def cashback_processor(request: Request, response :Response):
     
     total_order = 0
     for product in order_data["products"]:
-        
-        order.append_product(type=product["type"], value=product["value"], qty=product["qty"])
+        count = 0
+        order.append_product(type=product["type"], 
+                                value=product["value"], 
+                                    qty=product["qty"])
+        if order.products[count].type == None:
+            response.status_code == 400
+            return {
+                "status":"type error"
+            }
         total_order += (float(product["value"]) * product["qty"])
-    
+        count += count
+     
     #Validation Total Order
     if(float(total_order) != float(order.total)):
         response.status_code = 422
@@ -67,12 +73,13 @@ async def cashback_processor(request: Request, response :Response):
         }
         
     #Send cashback for API  
-    try:   
+    try:      
         response_api = httpx.post(url=API_URL_REQUEST,
                     data=json.dumps({
             "document":order.customer.document,
-            "cashback":order.calculation_cashback_products()
+            "cashback":order.calculate_cashback_products()
         })).json()
+        
         status = "Cashback complete"
         response.status_code = 201
     except:
@@ -80,13 +87,8 @@ async def cashback_processor(request: Request, response :Response):
         status = "Operation Fail"
         response.status_code = 500
     
-        
     #Response to client
     return {
         "status":status,
         "response":response_api
     }
-
-
-if __name__ == '__main__':
-    uvicorn.run(app="main:app",host="127.0.0.1",port=8000,debug=True)
