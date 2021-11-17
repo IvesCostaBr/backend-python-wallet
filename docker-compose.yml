@@ -8,10 +8,5 @@ services:
         - 8000:80
       environment:
         - API_URL_REQUEST=https://5efb30ac80d8170016f7613d.mockapi.io/api/mock/Cashback
-        - DEBUG=True
-        - URL=ec2-54-146-82-179.compute-1.amazonaws.com
-        - DATABASE=d1h7osijpd7f9s
-        - USER_DATABASE=rqemedpipcvgxr
-        - PORT_DATABASE=5432
-        - PASSWORD_DATABASE=f26a5298447b74a53d38ae15bf5d4d789a3d5d8fbaf2ad9116945b5b48be7423
-        - URI_DATABASE=postgres://rqemedpipcvgxr:f26a5298447b74a53d38ae15bf5d4d789a3d5d8fbaf2ad9116945b5b48be7423@ec2-54-146-82-179.compute-1.amazonaws.com:5432/d1h7osijpd7f9s
+        #Setar variaveis aqui
+        #Valores em aspas
