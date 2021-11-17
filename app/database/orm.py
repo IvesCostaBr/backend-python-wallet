@@ -39,9 +39,3 @@ engine = create_engine(DATABASE_URL_ENGINE)
 Base.metadata.create_all(bind=engine)
 Session = sessionmaker(bind=engine)
 
-
-
-class Database:
-    def __str__(self,url):
-        self.__url = url
-        self.engine = None
