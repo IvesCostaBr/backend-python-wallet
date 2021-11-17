@@ -105,8 +105,12 @@ async def cashback_processor(request: Request, response :Response):
 async def cashbash_get():
     database_session = Session()
     orders = database_session.query(Order).all()
-    json_resp = json.dumps(orders)
+    list = []
+    for order in orders:
+       list.append(order.return_dict()) 
     
     return {
-        json_resp
+        json.dumps(list)
     }
+    
+    

@@ -1,3 +1,4 @@
+import json
 from sqlalchemy import create_engine, Column, Integer, String, DECIMAL
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import session, sessionmaker
@@ -24,18 +25,19 @@ class Order(Base):
     customer = Column('customer', String)
     
     def return_dict(self):
-        value = {
+        return json.dumps( {
             "id":self.id,
             "cod_transaction":self.cod_transaction ,
             "date":str(self.date),
             "total_order":float(self.total_order),
             "total_cashback":float(self.total_cashback),
             "customer":self.customer 
-        }
-        return value
+        })
+        
     
 engine = create_engine(DATABASE_URL_ENGINE)
 
 Base.metadata.create_all(bind=engine)
 Session = sessionmaker(bind=engine)
+
 
