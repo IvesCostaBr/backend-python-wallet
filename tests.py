@@ -132,7 +132,7 @@ DATA_TEST = [
 class TestingRoutes(unittest.TestCase):
     def test_get(self):
         response = requests.get(f'{SERVER}/api/cashback')
-        self.assertEqual(response.status_code, 405)
+        self.assertEqual(response.status_code, 200)
     
     def test_post_no_body(self):
         response = requests.post(f'{SERVER}/api/cashback')
