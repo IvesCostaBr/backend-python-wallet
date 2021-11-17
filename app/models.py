@@ -1,5 +1,6 @@
 from datetime import datetime
-
+from app.database.orm import Session, Order
+import uuid
 
 class Customer:
     def __init__(self, document, name) -> None:
@@ -29,9 +30,8 @@ class Product:
         self.validate_types()
         self.value = value
         self.qty = qty
-        self.discount = 0.00
+        self.discount = self.calculate_discount()
         
-
     def __str__(self) -> str:
         return f"""Type:{self.type}
             | Value: {self.value} | Quantity:{self.qty}"""
@@ -54,7 +54,7 @@ class Product:
     
         
 
-class Order:
+class OrderP:
     def __init__(self, sold_at, customer:Customer, total):
         self.sold_at = self.validate_date(sold_at)
         if self.sold_at is None:
@@ -81,14 +81,28 @@ class Order:
         
     def calculate_cashback_products(self):
         for product in self.products:
-            value = product.value
-            if (value):
-                self.total_cashback += float(value)
+            discount = product.discount
+            if (discount):
+                self.total_cashback += float(discount)
             else:
                 self.total_cashback = None
                 break
     
         return self.total_cashback
+    
+    def save_order(self):
+        database_session = Session()
+        order = Order()
+        order.cod_transaction = uuid.uuid4().hex
+        order.date = datetime.now()
+        order.total_order = self.total
+        order.total_cashback = self.total_cashback
+        order.customer = self.customer.document
+        
+        database_session.add(order)
+        database_session.commit()
+        database_session.close()
+        
     
     def __str__(self):
         return f"Sold at:{self.sold_at} |Products:{self.products}"

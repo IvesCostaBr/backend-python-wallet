@@ -1,9 +1,9 @@
-from logging import ERROR
 from fastapi import FastAPI
 from starlette.requests import Request
 from starlette.responses import Response
-from .models import Customer, Order
+from .models import Customer, OrderP
 from .consts import *
+from .database.orm import Session, Order
 import httpx
 import ast
 import json
@@ -42,7 +42,7 @@ async def cashback_processor(request: Request, response :Response):
             "status":"document invalid"
         }
 
-    order = Order(customer=customer, 
+    order = OrderP(customer=customer, 
                   sold_at=order_data["sold_at"], 
                     total=order_data["total"])
     if order.sold_at == None:
@@ -82,13 +82,34 @@ async def cashback_processor(request: Request, response :Response):
         
         status = "Cashback complete"
         response.status_code = 201
+        try:
+            order.save_order() 
+        except:
+            print("Error save database")
+            
     except:
         response_api="error in request"
         status = "Operation Fail"
         response.status_code = 500
-    
+        
+     
     #Response to client
     return {
         "status":status,
         "response":response_api
     }
+    
+    
+#get all register    
+@app.get("/api/cashback")
+async def cashbash_get():
+    database_session = Session()
+    orders = database_session.query(Order).all()
+    response_list = []
+    
+    for order in orders:
+        response_list.append(order.return_dict())
+    
+    print(response_list)
+    json_resp = json.dumps(response_list)
+    return json_resp
