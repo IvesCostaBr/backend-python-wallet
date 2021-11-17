@@ -14,7 +14,7 @@ app = FastAPI()
 @app.get("/")
 async def index():
     return {
-        "Cashback Processing Software V:": 1.1,
+        "Cashback Processor Software V:": 1.1,
         "Dev":"Ives Costa",
         "Date":"16/11/2021"
     }
@@ -110,6 +110,5 @@ async def cashbash_get():
     for order in orders:
         response_list.append(order.return_dict())
     
-    print(response_list)
     json_resp = json.dumps(response_list)
     return json_resp
