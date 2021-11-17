@@ -37,7 +37,7 @@ Para executar o projeto é necessário que instale os pŕe-requesitos acima como
 ```text
 DEBUG=False
 API_URL_REQUEST=https://5efb30ac80d8170016f7613d.mockapi.io/api/mock/Cashback
-DATABASE_URL=ec2-54-146-82-179.compute-1.amazonaws.com
+URL=ec2-54-146-82-179.compute-1.amazonaws.com
 DATABASE=d1h7osijpd7f9s
 USER_DATABASE=rqemedpipcvgxr
 PORT_DATABASE=5432
