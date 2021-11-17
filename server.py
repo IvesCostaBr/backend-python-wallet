@@ -4,6 +4,7 @@ from multiprocessing import Process
 import sys
 import uvicorn
 
+
 if __name__ == '__main__':
     try:
         uvicorn.run(app="server:app",
