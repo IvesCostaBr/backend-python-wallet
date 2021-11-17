@@ -30,6 +30,24 @@
 
 Para executar o projeto é necessário que instale os pŕe-requesitos acima como docker, docker-compose caso queira utilixar o docker para rodar a aplicação, caso queria rodar ela com python direto na sua maquina, basta o python instlado e bem configurado no seu ambiente.
 
+## .ENV
+
+- Para o rodar o projeto localmente , vai precisar do arquivo .env dentro da pasta /app/ então crie-o colocando o conteudo abaixo.
+
+```text
+DEBUG=False
+API_URL_REQUEST=https://5efb30ac80d8170016f7613d.mockapi.io/api/mock/Cashback
+DATABASE_URL=ec2-54-146-82-179.compute-1.amazonaws.com
+DATABASE=d1h7osijpd7f9s
+USER_DATABASE=rqemedpipcvgxr
+PORT_DATABASE=5432
+PASSWORD_DATABASE=f26a5298447b74a53d38ae15bf5d4d789a3d5d8fbaf2ad9116945b5b48be7423
+URI_DATABASE=postgres://rqemedpipcvgxr:f26a5298447b74a53d38ae15bf5d4d789a3d5d8fbaf2ad9116945b5b48be7423@ec2-54-146-82-179.compute-1.amazonaws.com:5432/d1h7osijpd7f9s
+```
+
+Caso queria trocar a aplicação para modo Debug , basta trocar de False para True
+
+
 
 ### Rodar com Docker
 caso queira rodar a aplicação utilizando docker, basta digitar os comando abaixo utilizando o docker-compose.
@@ -59,21 +77,6 @@ $ docker-compose up -d
   - 3 - Com a venv ativada vamos instalar os pacotes com o comando `pip install -r requirements-dev.txt`
   - 4 - Agora já podemos rodar o programa com o comando `python server.py`.
 
-
-- Para o rodar o projeto localmente , vai precisar do arquivo .env dentro da pasta /app/ então crie-o colocando o conteudo abaixo.
-
-```text
-DEBUG=False
-API_URL_REQUEST=https://5efb30ac80d8170016f7613d.mockapi.io/api/mock/Cashback
-DATABASE_URL=ec2-54-146-82-179.compute-1.amazonaws.com
-DATABASE=d1h7osijpd7f9s
-USER_DATABASE=rqemedpipcvgxr
-PORT_DATABASE=5432
-PASSWORD_DATABASE=f26a5298447b74a53d38ae15bf5d4d789a3d5d8fbaf2ad9116945b5b48be7423
-URI_DATABASE=postgres://rqemedpipcvgxr:f26a5298447b74a53d38ae15bf5d4d789a3d5d8fbaf2ad9116945b5b48be7423@ec2-54-146-82-179.compute-1.amazonaws.com:5432/d1h7osijpd7f9s
-```
-
-Caso queria trocar a aplicação para modo Debug , basta trocar de False para True
 
 
 #### Se você seguiu todos os dados Certinho o servidor já está ativo com a aplicação na rota http://127.0.0.1:8000/
