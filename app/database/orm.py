@@ -1,17 +1,24 @@
-from sqlalchemy import create_engine, Column, Integer, ForeignKey, String, DECIMAL
+from sqlalchemy import create_engine, Column, Integer, String, DECIMAL
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import session, sessionmaker
-import json
-
 from sqlalchemy.sql.sqltypes import DATETIME
+from app.consts import *
 
 Base = declarative_base()
+
+DATABASE_URL_ENGINE = ""
+
+if DEBUG == True:
+    DATABASE_URL_ENGINE = DATABASE_LOCAL
+else:
+    DATABASE_URL_ENGINE = DATABASE_URL
+
 
 class Order(Base):
     __tablename__ = "order"
     id = Column('id', Integer, primary_key=True, autoincrement=True) 
     cod_transaction = Column('cod_transaction', String, unique=True)
-    date = Column('date', DATETIME)
+    date = Column('date', String)
     total_order = Column('total_order', DECIMAL)
     total_cashback = Column('total_cashback', DECIMAL)
     customer = Column('customer', String)
@@ -27,7 +34,14 @@ class Order(Base):
         }
         return value
     
-engine = create_engine("sqlite:///order.db", echo=True)
+engine = create_engine(DATABASE_URL_ENGINE)
 
 Base.metadata.create_all(bind=engine)
 Session = sessionmaker(bind=engine)
+
+
+
+class Database:
+    def __str__(self,url):
+        self.__url = url
+        self.engine = None
